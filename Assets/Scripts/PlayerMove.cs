@@ -5,6 +5,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+//test
+
 //эта строчка гарантирует что наш скрипт не завалится 
 //ести на плеере будет отсутствовать компонент Rigidbody
 //[RequireComponent(typeof(Rigidbody))]
