@@ -4,26 +4,32 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
-    [SerializeField] PlayerMove _playerMove;
-
     private void Start()
     {
-        _playerMove = FindObjectOfType<PlayerMove>();
+        
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        PlayerMove playerMove = other.attachedRigidbody.GetComponent<PlayerMove>();
+        if (playerMove)
+        {
+            Debug.Log("Tолкать");
+            playerMove._push = true;
+            playerMove._animator.SetBool("Run", false);
+            playerMove._animator.SetBool("Push", true);
+        }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
-        Debug.Log("Tолкать");
-        _playerMove._push = true;
-        _playerMove._animator.SetBool("Run", false);
-        _playerMove._animator.SetBool("Push", true);
-    }
+        PlayerMove playerMove = other.attachedRigidbody.GetComponent<PlayerMove>();
+        if (playerMove)
+        {
+            Debug.Log("Не толкать");
+            playerMove._push = false;
+            playerMove._animator.SetBool("Run", true);
+            playerMove._animator.SetBool("Push", false);
+        }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        Debug.Log("Не толкать");
-        _playerMove._push = false;
-        _playerMove._animator.SetBool("Run", true);
-        _playerMove._animator.SetBool("Push", false);
     }
 }

@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-//test
+//-0.06199998
 
 //эта строчка гарантирует что наш скрипт не завалитс€ 
 //ести на плеере будет отсутствовать компонент Rigidbody
@@ -38,6 +38,7 @@ public class PlayerMove : MonoBehaviour
         {
             _animator.SetBool("Run", false);
         }
+
 
         // «апрет перемещени€ по другим ос€м
         if (Mathf.Abs(moveHorizontal) > 0)
@@ -74,9 +75,14 @@ public class PlayerMove : MonoBehaviour
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
+
+        if (transform.eulerAngles.y != _angle) { 
+            RotatePlayer(_angle);
+        }
+
         if (_isRotating)
         {
-            RotatePlayer(_angle);
+            
         }
         else
         {
@@ -105,6 +111,8 @@ public class PlayerMove : MonoBehaviour
 
     private void RotatePlayer(int angle)
     {
+
+        
 
         Debug.Log("RotatePlayer");
         Quaternion needRotation = Quaternion.Euler(0.0f, angle, 0.0f);
