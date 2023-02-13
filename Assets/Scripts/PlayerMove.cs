@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -12,9 +14,10 @@ using UnityEngine.UIElements;
 //[RequireComponent(typeof(Rigidbody))]
 public class PlayerMove : MonoBehaviour
 {
-    
+
     [SerializeField] private float _speed;
     [SerializeField] public Animator _animator;
+    DrawLevel _drawLevel;
 
     public bool _push = false;
     bool _isRotating = false;
@@ -22,109 +25,331 @@ public class PlayerMove : MonoBehaviour
     public float moveHorizontal;
     public float moveVertical;
 
-    // все действия с физикой необходимо обрабатывать в FixedUpdate, а не в Update
+    /*
+    string[] map = {
+        "##########",
+        "#   O    #",
+        "#   #    #",
+        "###   #X##",
+        "#        #",
+        "#X## #####",
+        "#   O   X#",
+        "# ##O### #",
+        "#        #",
+        "##########"
+    };
+    */
+    private string[,] map;
+
+    int newX;
+    int newZ;
+    int oldX;
+    int oldZ;
+
+
+    bool isMoving = false;
+
+    public int interpolationFramesCount = 20; // Number of frames to completely interpolate between the 2 positions
+    int elapsedFrames = 0;
+
+    private void Start()
+    {
+        _drawLevel = FindObjectOfType<DrawLevel>();
+
+        map = _drawLevel.getMap();
+
+        if (map != null)
+        {
+            Debug.Log("Длина массива = " + map.GetLength(0));
+            Debug.Log("Длина массива = " + map.GetLength(1));
+            oldX = 1;
+            oldZ = _drawLevel.MapLength - 2;
+            newX = 0;
+            newZ = 0;
+
+            Debug.Log("Ящик " + map[5, 7].ToString());
+
+
+            for (int z = 0; z < 10; z++)
+            {
+                string line = "";
+                for (int x = 0; x < 10; x++)
+                {
+                    line += map[z, x].ToString();
+                    //Debug.Log(map[z, x].ToString());
+                }
+                Debug.Log(line);
+            }
+
+
+        }
+    }
+
+
     void Update()
     {
-        moveHorizontal = Input.GetAxis("Horizontal");
-        moveVertical = Input.GetAxis("Vertical");
 
-        
-        // Start/Stop animations
-        if ((Mathf.Abs(moveHorizontal) > 0 || Mathf.Abs(moveVertical) > 0) && !_push)
+        if (map == null) return;
+
+        moveHorizontal = Input.GetAxisRaw("Horizontal");
+        moveVertical = Input.GetAxisRaw("Vertical");
+
+        if (_isRotating)
+        {
+            RotatePlayer(_angle);
+            return;
+        }
+
+        /*
+                if (moveHorizontal < 0 && map[oldZ, oldX - 1] == "#" && !isMoving && !_isRotating)
+                {
+                    _animator.SetBool("Push", true);
+                }
+        */
+
+        if (moveHorizontal < 0 && !isMoving)
+        {
+            moveVertical = 0;
+
+            _angle = 270;
+            if (transform.eulerAngles.y != _angle)
+            {
+                _isRotating = true;
+                return;
+            }
+            if (map[oldZ, oldX - 1] == " " || map[oldZ, oldX - 1] == "X")
+            {
+                newX = -1;
+                isMoving = true;
+            }
+            else if (map[oldZ, oldX - 1] == "O" || map[oldZ, oldX - 1] == "V")
+            {
+                if (map[oldZ, oldX - 2] == " ")
+                {
+                    map[oldZ, oldX - 2] = "O";
+                    if (map[oldZ, oldX - 1] == "V")
+                    {
+                        map[oldZ, oldX - 1] = "X";
+                    }
+                    else
+                    {
+                        map[oldZ, oldX - 1] = " ";
+                    }
+                    newX = -1;
+                    isMoving = true;
+                }
+                else if (map[oldZ, oldX - 2] == "X")
+                {
+                    map[oldZ, oldX - 2] = "V";
+                    if (map[oldZ, oldX - 1] == "V")
+                    {
+                        map[oldZ, oldX - 1] = "X";
+                    }
+                    else
+                    {
+                        map[oldZ, oldX - 1] = " ";
+                    }
+                    newX = -1;
+                    isMoving = true;
+                }
+            }
+
+        }
+
+        if (moveHorizontal > 0 && !isMoving)
+        {
+            moveVertical = 0;
+
+            _angle = 90;
+            if (transform.eulerAngles.y != _angle)
+            {
+                _isRotating = true;
+                return;
+            }
+
+
+
+
+            if (map[oldZ, oldX + 1] == " " || map[oldZ, oldX + 1] == "X")
+            {
+                
+                newX = 1;
+                isMoving = true;
+            }
+            else if (map[oldZ, oldX + 1] == "O" || map[oldZ, oldX + 1] == "V")
+            {
+                
+                if (map[oldZ, oldX + 2] == " ")
+                {
+                    map[oldZ, oldX + 2] = "O";
+                    if (map[oldZ, oldX + 1] == "V")
+                    {
+                        map[oldZ, oldX + 1] = "X";
+                    }
+                    else
+                    {
+                        map[oldZ, oldX + 1] = " ";
+                    }
+                    newX = 1;
+                    isMoving = true;
+
+                    
+                    
+                }
+                else if (map[oldZ, oldX + 2] == "X")
+                {
+                    map[oldZ, oldX + 2] = "V";
+                    if (map[oldZ, oldX + 1] == "V")
+                    {
+                        map[oldZ, oldX + 1] = "X";
+                    }
+                    else
+                    {
+                        map[oldZ, oldX + 1] = " ";
+                    }
+                    newX = 1;
+                    isMoving = true;
+
+                    
+                }
+            }
+        }
+
+        if (moveVertical < 0 && !isMoving)
+        {
+            moveHorizontal = 0;
+
+            _angle = 180;
+            if (transform.eulerAngles.y != _angle)
+            {
+                _isRotating = true;
+                return;
+            }
+            if (map[oldZ - 1, oldX] == " " || map[oldZ - 1, oldX] == "X")
+            {
+                newZ = -1;
+                isMoving = true;
+            }
+            else if (map[oldZ - 1, oldX] == "O" || map[oldZ - 1, oldX] == "V")
+            {
+                if (map[oldZ - 2, oldX] == " ")
+                {
+                    map[oldZ - 2, oldX] = "O";
+
+                    if (map[oldZ - 1, oldX] == "V")
+                    {
+                        map[oldZ - 1, oldX] = "X";
+                    }
+                    else
+                    {
+                        map[oldZ - 1, oldX] = " ";
+                    }
+                    newZ = -1;
+                    isMoving = true;
+                }
+                else if (map[oldZ - 2, oldX] == "X")
+                {
+                    map[oldZ - 2, oldX] = "V";
+                    if (map[oldZ - 1, oldX] == "V")
+                    {
+                        map[oldZ - 1, oldX] = "X";
+                    }
+                    else
+                    {
+                        map[oldZ - 1, oldX] = " ";
+                    }
+                    newZ = -1;
+                    isMoving = true;
+                }
+            }
+        }
+
+        if (moveVertical > 0 && !isMoving)
+        {
+            moveHorizontal = 0;
+
+            _angle = 0;
+            if (transform.eulerAngles.y != _angle)
+            {
+                _isRotating = true;
+                return;
+            }
+            if (map[oldZ + 1, oldX] == " " || map[oldZ + 1, oldX] == "X")
+            {
+                newZ = 1;
+                isMoving = true;
+            }
+            else if (map[oldZ + 1, oldX] == "O" || map[oldZ + 1, oldX] == "V")
+            {
+                if (map[oldZ + 2, oldX] == " ")
+                {
+                    map[oldZ + 2, oldX] = "O";
+                    if (map[oldZ + 1, oldX] == "V")
+                    {
+                        map[oldZ + 1, oldX] = "X";
+                    }
+                    else
+                    {
+                        map[oldZ + 1, oldX] = " ";
+                    }
+                    newZ = 1;
+                    isMoving = true;
+                }
+                else if (map[oldZ + 2, oldX] == "X")
+                {
+                    map[oldZ + 2, oldX] = "V";
+                    if (map[oldZ + 1, oldX] == "V")
+                    {
+                        map[oldZ + 1, oldX] = "X";
+                    }
+                    else
+                    {
+                        map[oldZ + 1, oldX] = " ";
+                    }
+                    newZ = 1;
+                    isMoving = true;
+                }
+            }
+        }
+
+
+        if (isMoving)
         {
             _animator.SetBool("Run", true);
         }
         else
         {
             _animator.SetBool("Run", false);
+            return;
         }
 
 
-        // Запрет перемещения по другим осям
-        if (Mathf.Abs(moveHorizontal) > 0)
+        float interpolationRatio = (float)elapsedFrames / interpolationFramesCount;
+        Vector3 interpolatedPosition = Vector3.Lerp(new Vector3(oldX, 0, oldZ), new Vector3(oldX + newX, 0, oldZ + newZ), interpolationRatio);
+
+        elapsedFrames = (elapsedFrames + 1) % (interpolationFramesCount + 1);
+        if (elapsedFrames == 0)
         {
-            moveVertical = 0;
+            isMoving = false;
+            oldX += newX;
+            oldZ += newZ;
+            newX = 0;
+            newZ = 0;
+            //Debug.Log("oldZ = " + oldZ + " oldX = " + oldX);
+            Debug.Log("Под ногами " + _drawLevel.getMap()[oldZ, oldX].ToString());
         }
 
-        if (Mathf.Abs(moveVertical) > 0)
-        {
-            moveHorizontal = 0;
-        }
-
-        // Разворот персонажа
-        if (moveHorizontal > 0)
-        {
-            _angle = 90;
-            if (transform.eulerAngles.y != _angle) _isRotating = true;
-        }
-        else if (moveHorizontal < 0)
-        {
-            _angle = 270;
-            if (transform.eulerAngles.y != _angle) _isRotating = true;
-        }
-        else if (moveVertical > 0)
-        {
-            _angle = 0;
-            if (transform.eulerAngles.y != _angle) _isRotating = true;
-        }
-        else if (moveVertical < 0)
-        {
-            _angle = 180;
-            if (transform.eulerAngles.y != _angle) _isRotating = true;
-        }
-
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
-
-        if (transform.eulerAngles.y != _angle) { 
-            RotatePlayer(_angle);
-        }
-
-        if (_isRotating)
-        {
-            
-        }
-        else
-        {
-            float k = 1f;
-            if (_push)
-            {
-                k = 0.3f;
-            }
-            
-
-            transform.position += movement * Time.deltaTime * _speed * k;
-        }
-
-
-
-        if(_animator.GetBool("Push"))
-        {
-            //Debug.Log("position = " + transform.position);
-            
-        }
-        
-        //Debug.Log("moveHorizontal = " + moveHorizontal);
-        //Debug.Log("moveVertical = " + moveVertical);
-
+        transform.position = interpolatedPosition;
     }
 
-    private void RotatePlayer(int angle)
+
+    void RotatePlayer(int angle)
     {
-
-        
-
-        Debug.Log("RotatePlayer");
         Quaternion needRotation = Quaternion.Euler(0.0f, angle, 0.0f);
-        // update
         transform.localRotation = Quaternion.RotateTowards(transform.localRotation, needRotation, 500 * Time.deltaTime);
         if (Quaternion.Angle(transform.localRotation, needRotation) < 0.01f)
         {
-            // finish
             _isRotating = false;
         }
     }
-
-
-    
 }
