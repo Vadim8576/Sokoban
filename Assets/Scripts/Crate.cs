@@ -1,42 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 
-public class Box : MonoBehaviour
+public class Crate : MonoBehaviour
 {
-    /*
-    private void OnTriggerEnter(Collider other)
+    [SerializeField] GameObject particle;
+    PlayerMove playerMove = null;
+
+    private void Update()
     {
-        if (other == null) return;
-        //Debug.Log("Tолкать");
-        //_playerMove = other.GetComponent<PlayerMove>();
-
-
-        PlayerMove _playerMove = other.attachedRigidbody.GetComponent<PlayerMove>();
-     
-        if (_playerMove)
+        if(playerMove && playerMove.IsPushing)
         {
-            Debug.Log("Tолкать");
-            _playerMove._push = true;
-            _playerMove._animator.SetBool("Run", false);
-            _playerMove._animator.SetBool("Push", true);
-            //this.transform.parent = other.transform;
-
+            transform.position = playerMove.InterpolatedPosition + playerMove.MoveVector;       
         }
     }
+
+
+    private void OnTriggerEnter(Collider other)
+    {       
+        if (other.gameObject.tag == "Player" && !playerMove)
+        {
+            playerMove = other.attachedRigidbody.GetComponent<PlayerMove>();
+            Debug.Log("Trigger");
+
+            if (!particle.activeSelf)
+            {
+                particle.SetActive(true);
+            }
+        }    
+    }
+
 
     private void OnTriggerExit(Collider other)
-    {
-        PlayerMove _playerMove = other.attachedRigidbody.GetComponent<PlayerMove>();
-        if (_playerMove)
+    {   
+        if (other.gameObject.tag == "Player" && playerMove)
         {
-            Debug.Log("Не толкать");
-            _playerMove._push = false;
-            _playerMove._animator.SetBool("Run", true);
-            _playerMove._animator.SetBool("Push", false);
-        }
 
+            Debug.Log("OnTriggerExit - Обнулили");
+            StopPushing();
+        }
+        
     }
 
-    */
+    public void StopPushing()
+    {
+        playerMove = null;
+        //Debug.Log("Обнулили");
+        if (particle.activeSelf)
+        {
+            particle.SetActive(false);
+        }
+    }
+
 }

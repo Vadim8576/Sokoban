@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2122611936134781398}
   - component: {fileID: 2122611936134781399}
   - component: {fileID: 2122611936134781396}
-  - component: {fileID: 2122611936134781397}
+  - component: {fileID: 2039930664}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -33,7 +33,7 @@ Transform:
   m_Children:
   - {fileID: 1945468393130038585}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2122611936134781399
 MonoBehaviour:
@@ -47,11 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ada62efffb5cbc4d9ca36dfb59dc92e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 3
-  _animator: {fileID: 2122611935969120699}
-  _push: 0
-  moveHorizontal: 0
-  moveVertical: 0
+  speed: 0
+  rotationSpeed: 600
+  animator: {fileID: 2122611935969120699}
+  IsPushing: 0
+  InterpolatedPosition: {x: 0, y: 0, z: 0}
+  MoveVector: {x: 0, y: 0, z: 0}
   interpolationFramesCount: 45
 --- !u!54 &2122611936134781396
 Rigidbody:
@@ -80,8 +81,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 0
---- !u!136 &2122611936134781397
-CapsuleCollider:
+--- !u!65 &2039930664
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -98,11 +99,9 @@ CapsuleCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.30433303
-  m_Height: 1.7889042
-  m_Direction: 1
-  m_Center: {x: -0.004711747, y: 0.89459014, z: 0.26179612}
+  serializedVersion: 3
+  m_Size: {x: 0.14419678, y: 1.7049035, z: 0.93174744}
+  m_Center: {x: 0.007085383, y: 0.8501207, z: 0.40914643}
 --- !u!1001 &2122611936129020626
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,9 +1,5 @@
-using Newtonsoft.Json;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class DrawLevel : MonoBehaviour
 {
@@ -13,13 +9,11 @@ public class DrawLevel : MonoBehaviour
     public GameObject _wall;
     public GameObject _player;
     
-
-    public TextMeshProUGUI _cellSymbol;
     
     string[] map = {
         "##########",
-        "#   O    #",
-        "#   #    #",
+        "#        #",
+        "#   #  O #",
         "###   #X##",
         "#        #",
         "#X## #####",
@@ -28,7 +22,7 @@ public class DrawLevel : MonoBehaviour
         "#        #",
         "##########"
     };
-    
+
     /*
     string[] map = {
         "##########",
@@ -43,6 +37,8 @@ public class DrawLevel : MonoBehaviour
         "##########"
     };
     */
+
+
     public string[,] Map2d;
     public int MapLength;
 
@@ -61,7 +57,7 @@ public class DrawLevel : MonoBehaviour
                 int zz = (MapLength - 1) - z;
 
                 string map2dString = map[z].Substring(x, 1);
-                Map2d[z, x] = map2dString;
+                Map2d[zz, xx] = map2dString;
                
 
                 if (map2dString != "#" && map2dString != "X")
@@ -78,16 +74,21 @@ public class DrawLevel : MonoBehaviour
                 {
                     Instantiate(_destinationCell, new Vector3(xx, 0, zz), Quaternion.identity);
                 }
+                
+                if (map2dString == "V")
+                {
+                    Instantiate(_destinationCell, new Vector3(xx, 0, zz), Quaternion.identity);
+                    Instantiate(_crate, new Vector3(xx, 0, zz), Quaternion.identity);
+                }
 
-                if (x == 1 && z == 1)
+                if (xx == 1 && zz == 8)
                 {
                     Instantiate(_player, new Vector3(xx, 0, zz), Quaternion.identity);
                 }
 
                 if (map2dString == "O")
                 {
-                    Debug.Log("ящик в " + xx + " " + zz);
-                    Instantiate(_crate, new Vector3(xx, 0, zz), Quaternion.identity);
+                   Instantiate(_crate, new Vector3(xx, 0, zz), Quaternion.identity);           
                 }
 
             }

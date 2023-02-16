@@ -1,126 +1,86 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using Unity.Burst.Intrinsics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-//-0.06199998
 
 //эта строчка гарантирует что наш скрипт не завалится 
 //ести на плеере будет отсутствовать компонент Rigidbody
 //[RequireComponent(typeof(Rigidbody))]
 public class PlayerMove : MonoBehaviour
 {
+    [SerializeField] private float speed;
+    [SerializeField] private float rotationSpeed;
+    [SerializeField] public Animator animator;
+    DrawLevel drawLevel;
 
-    [SerializeField] private float _speed;
-    [SerializeField] public Animator _animator;
-    DrawLevel _drawLevel;
+    //Crate crate;
 
-    public bool _push = false;
-    bool _isRotating = false;
-    int _angle = 0;
-    public float moveHorizontal;
-    public float moveVertical;
+    public bool IsPushing = false;
+    bool isRotating = false;
+    bool isMoving = false;
+    int angle = 0;
+    int destinationCount = 0; // Счетчик ящиков, поставленных на место назначения
 
-    /*
-    string[] map = {
-        "##########",
-        "#   O    #",
-        "#   #    #",
-        "###   #X##",
-        "#        #",
-        "#X## #####",
-        "#   O   X#",
-        "# ##O### #",
-        "#        #",
-        "##########"
-    };
-    */
-    private string[,] map;
+    float moveHorizontal;
+    float moveVertical;
 
     int newX;
     int newZ;
     int oldX;
     int oldZ;
 
+    string[,] map;
 
-    bool isMoving = false;
-
-    public int interpolationFramesCount = 20; // Number of frames to completely interpolate between the 2 positions
+    public Vector3 InterpolatedPosition;
+    public Vector3 MoveVector;
+    public int interpolationFramesCount = 45; // Number of frames to completely interpolate between the 2 positions
     int elapsedFrames = 0;
+
 
     private void Start()
     {
-        _drawLevel = FindObjectOfType<DrawLevel>();
+        drawLevel = FindObjectOfType<DrawLevel>();
+        //crate = FindObjectOfType<Crate>();
 
-        map = _drawLevel.getMap();
+        map = drawLevel.getMap();
 
         if (map != null)
         {
-            Debug.Log("Длина массива = " + map.GetLength(0));
-            Debug.Log("Длина массива = " + map.GetLength(1));
             oldX = 1;
-            oldZ = _drawLevel.MapLength - 2;
+            oldZ = drawLevel.MapLength - 2;
             newX = 0;
             newZ = 0;
-
-            Debug.Log("Ящик " + map[5, 7].ToString());
-
-
-            for (int z = 0; z < 10; z++)
-            {
-                string line = "";
-                for (int x = 0; x < 10; x++)
-                {
-                    line += map[z, x].ToString();
-                    //Debug.Log(map[z, x].ToString());
-                }
-                Debug.Log(line);
-            }
-
-
         }
     }
 
 
     void Update()
     {
-
         if (map == null) return;
 
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
 
-        if (_isRotating)
+        if (isRotating)
         {
-            RotatePlayer(_angle);
+            RotatePlayer(angle);
             return;
         }
 
-        /*
-                if (moveHorizontal < 0 && map[oldZ, oldX - 1] == "#" && !isMoving && !_isRotating)
-                {
-                    _animator.SetBool("Push", true);
-                }
-        */
 
-        if (moveHorizontal < 0 && !isMoving)
+        if (moveHorizontal < 0 && !isMoving && !IsPushing)
         {
             moveVertical = 0;
 
-            _angle = 270;
-            if (transform.eulerAngles.y != _angle)
+            angle = 270;
+            if (transform.eulerAngles.y != angle)
             {
-                _isRotating = true;
+                isRotating = true;
                 return;
             }
             if (map[oldZ, oldX - 1] == " " || map[oldZ, oldX - 1] == "X")
             {
                 newX = -1;
                 isMoving = true;
+                IsPushing = false;
             }
             else if (map[oldZ, oldX - 1] == "O" || map[oldZ, oldX - 1] == "V")
             {
@@ -130,105 +90,113 @@ public class PlayerMove : MonoBehaviour
                     if (map[oldZ, oldX - 1] == "V")
                     {
                         map[oldZ, oldX - 1] = "X";
+                        destinationCount--;
                     }
                     else
                     {
                         map[oldZ, oldX - 1] = " ";
                     }
                     newX = -1;
-                    isMoving = true;
+                    isMoving = false;
+                    IsPushing = true;
                 }
                 else if (map[oldZ, oldX - 2] == "X")
                 {
                     map[oldZ, oldX - 2] = "V";
+                    destinationCount++;
+
                     if (map[oldZ, oldX - 1] == "V")
                     {
                         map[oldZ, oldX - 1] = "X";
+                        destinationCount--;
                     }
                     else
                     {
                         map[oldZ, oldX - 1] = " ";
                     }
                     newX = -1;
-                    isMoving = true;
+                    isMoving = false;
+                    IsPushing = true;
                 }
             }
-
         }
 
-        if (moveHorizontal > 0 && !isMoving)
+        if (moveHorizontal > 0 && !isMoving && !IsPushing)
         {
             moveVertical = 0;
 
-            _angle = 90;
-            if (transform.eulerAngles.y != _angle)
+            angle = 90;
+            if (transform.eulerAngles.y != angle)
             {
-                _isRotating = true;
+                isRotating = true;
                 return;
             }
 
-
-
-
             if (map[oldZ, oldX + 1] == " " || map[oldZ, oldX + 1] == "X")
             {
-                
+
                 newX = 1;
                 isMoving = true;
+                IsPushing = false;
+
             }
             else if (map[oldZ, oldX + 1] == "O" || map[oldZ, oldX + 1] == "V")
             {
-                
+
                 if (map[oldZ, oldX + 2] == " ")
                 {
                     map[oldZ, oldX + 2] = "O";
                     if (map[oldZ, oldX + 1] == "V")
                     {
                         map[oldZ, oldX + 1] = "X";
+                        destinationCount--;
                     }
                     else
                     {
                         map[oldZ, oldX + 1] = " ";
                     }
-                    newX = 1;
-                    isMoving = true;
 
-                    
-                    
+                    newX = 1;
+
+                    isMoving = false;
+                    IsPushing = true;
                 }
                 else if (map[oldZ, oldX + 2] == "X")
                 {
                     map[oldZ, oldX + 2] = "V";
+                    destinationCount++;
                     if (map[oldZ, oldX + 1] == "V")
                     {
                         map[oldZ, oldX + 1] = "X";
+                        destinationCount--;
                     }
                     else
                     {
                         map[oldZ, oldX + 1] = " ";
                     }
                     newX = 1;
-                    isMoving = true;
 
-                    
+                    isMoving = false;
+                    IsPushing = true;
                 }
             }
         }
 
-        if (moveVertical < 0 && !isMoving)
+        if (moveVertical < 0 && !isMoving && !IsPushing)
         {
             moveHorizontal = 0;
 
-            _angle = 180;
-            if (transform.eulerAngles.y != _angle)
+            angle = 180;
+            if (transform.eulerAngles.y != angle)
             {
-                _isRotating = true;
+                isRotating = true;
                 return;
             }
             if (map[oldZ - 1, oldX] == " " || map[oldZ - 1, oldX] == "X")
             {
                 newZ = -1;
                 isMoving = true;
+                IsPushing = false;
             }
             else if (map[oldZ - 1, oldX] == "O" || map[oldZ - 1, oldX] == "V")
             {
@@ -239,45 +207,54 @@ public class PlayerMove : MonoBehaviour
                     if (map[oldZ - 1, oldX] == "V")
                     {
                         map[oldZ - 1, oldX] = "X";
+                        destinationCount--;
                     }
                     else
                     {
                         map[oldZ - 1, oldX] = " ";
                     }
                     newZ = -1;
-                    isMoving = true;
+
+                    isMoving = false;
+                    IsPushing = true;
                 }
                 else if (map[oldZ - 2, oldX] == "X")
                 {
                     map[oldZ - 2, oldX] = "V";
+                    destinationCount++;
+
                     if (map[oldZ - 1, oldX] == "V")
                     {
                         map[oldZ - 1, oldX] = "X";
+                        destinationCount--;
                     }
                     else
                     {
                         map[oldZ - 1, oldX] = " ";
                     }
                     newZ = -1;
-                    isMoving = true;
+
+                    isMoving = false;
+                    IsPushing = true;
                 }
             }
         }
 
-        if (moveVertical > 0 && !isMoving)
+        if (moveVertical > 0 && !isMoving && !IsPushing)
         {
             moveHorizontal = 0;
 
-            _angle = 0;
-            if (transform.eulerAngles.y != _angle)
+            angle = 0;
+            if (transform.eulerAngles.y != angle)
             {
-                _isRotating = true;
+                isRotating = true;
                 return;
             }
             if (map[oldZ + 1, oldX] == " " || map[oldZ + 1, oldX] == "X")
             {
                 newZ = 1;
                 isMoving = true;
+                IsPushing = false;
             }
             else if (map[oldZ + 1, oldX] == "O" || map[oldZ + 1, oldX] == "V")
             {
@@ -287,69 +264,155 @@ public class PlayerMove : MonoBehaviour
                     if (map[oldZ + 1, oldX] == "V")
                     {
                         map[oldZ + 1, oldX] = "X";
+                        destinationCount--;
                     }
                     else
                     {
                         map[oldZ + 1, oldX] = " ";
                     }
                     newZ = 1;
-                    isMoving = true;
+
+                    isMoving = false;
+                    IsPushing = true;
                 }
                 else if (map[oldZ + 2, oldX] == "X")
                 {
                     map[oldZ + 2, oldX] = "V";
+                    destinationCount++;
+
                     if (map[oldZ + 1, oldX] == "V")
                     {
                         map[oldZ + 1, oldX] = "X";
+                        destinationCount--;
                     }
                     else
                     {
                         map[oldZ + 1, oldX] = " ";
                     }
                     newZ = 1;
-                    isMoving = true;
+
+                    isMoving = false;
+                    IsPushing = true;
                 }
             }
         }
 
 
+        //Debug.Log("destinationCount = " + destinationCount);
+
+
+
+        bool isAnimation = animator.GetBool("Run");
+
         if (isMoving)
         {
-            _animator.SetBool("Run", true);
+            if (!isAnimation)
+            {
+                StartMoving();
+            }
         }
         else
         {
-            _animator.SetBool("Run", false);
-            return;
+            StopMoving();
+        }
+
+        isAnimation = animator.GetBool("Push");
+
+        if (IsPushing)
+        {
+            if (!isAnimation)
+            {
+                StartPushing();
+            }
+        }
+        else
+        {
+            StopPushing();
         }
 
 
+        if (!isMoving && !IsPushing) return;
+
+
         float interpolationRatio = (float)elapsedFrames / interpolationFramesCount;
-        Vector3 interpolatedPosition = Vector3.Lerp(new Vector3(oldX, 0, oldZ), new Vector3(oldX + newX, 0, oldZ + newZ), interpolationRatio);
+
+        MoveVector = new Vector3(newX, 0, newZ);
+
+        InterpolatedPosition = Vector3.Lerp(new Vector3(oldX, 0, oldZ), new Vector3(oldX + newX, 0, oldZ + newZ), interpolationRatio);
 
         elapsedFrames = (elapsedFrames + 1) % (interpolationFramesCount + 1);
         if (elapsedFrames == 0)
         {
+            if (IsPushing)
+            {
+                IsPushing = false;
+            }
+
             isMoving = false;
+
             oldX += newX;
             oldZ += newZ;
             newX = 0;
             newZ = 0;
-            //Debug.Log("oldZ = " + oldZ + " oldX = " + oldX);
-            Debug.Log("Под ногами " + _drawLevel.getMap()[oldZ, oldX].ToString());
+            //Debug.Log("Под ногами " + drawLevel.getMap()[oldZ, oldX].ToString());
+
+
+            if (destinationCount == 3)
+            {
+                Debug.Log("Level complite!");
+            }
         }
 
-        transform.position = interpolatedPosition;
+        transform.position = InterpolatedPosition;
+
     }
 
+    void StartMoving()
+    {
+        isMoving = true;
+        IsPushing = false;
+        animator.SetBool("Run", true);
+        interpolationFramesCount = 30;
+    }
+
+    void StopMoving()
+    {
+        animator.SetBool("Run", false);
+    }
+
+    void StartPushing()
+    {
+        isMoving = false;
+        IsPushing = true;
+        animator.SetBool("Push", true);
+        interpolationFramesCount = 200;
+    }
+
+    void StopPushing()
+    {
+        animator.SetBool("Push", false);
+    }
 
     void RotatePlayer(int angle)
     {
         Quaternion needRotation = Quaternion.Euler(0.0f, angle, 0.0f);
-        transform.localRotation = Quaternion.RotateTowards(transform.localRotation, needRotation, 500 * Time.deltaTime);
+        transform.localRotation = Quaternion.RotateTowards(transform.localRotation, needRotation, rotationSpeed * Time.deltaTime);
         if (Quaternion.Angle(transform.localRotation, needRotation) < 0.01f)
         {
-            _isRotating = false;
+            isRotating = false;
         }
+    }
+
+
+
+    public bool IsAnimationPlaying(string animationName)
+    {
+        // берем информацию о состоянии
+        var animatorStateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        // смотрим, есть ли в нем имя какой-то анимации, то возвращаем true
+        if (animatorStateInfo.IsName(animationName))
+            return true;
+
+        return false;
     }
 }
