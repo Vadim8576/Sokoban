@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 
 public class DrawLevel : MonoBehaviour
@@ -10,6 +9,14 @@ public class DrawLevel : MonoBehaviour
     public GameObject _player;
     
     
+
+    // —южет: кладовщик просыпаетс€ от кошмара - на него едут €щики со всех сторон
+    // он просыпаетс€ в холодном поту и идет на работу
+
+
+    // —клад 01 - Storage 01
+
+
     string[] map = {
         "##########",
         "#        #",

@@ -6,6 +6,8 @@ using UnityEngine;
 //[RequireComponent(typeof(Rigidbody))]
 public class PlayerMove : MonoBehaviour
 {
+    [SerializeField] GameObject particle;
+
     [SerializeField] private float speed;
     [SerializeField] private float rotationSpeed;
     [SerializeField] public Animator animator;
@@ -34,6 +36,7 @@ public class PlayerMove : MonoBehaviour
     public int interpolationFramesCount = 45; // Number of frames to completely interpolate between the 2 positions
     int elapsedFrames = 0;
 
+    bool isAnimation;
 
     private void Start()
     {
@@ -49,6 +52,8 @@ public class PlayerMove : MonoBehaviour
             newX = 0;
             newZ = 0;
         }
+
+
     }
 
 
@@ -56,14 +61,29 @@ public class PlayerMove : MonoBehaviour
     {
         if (map == null) return;
 
+
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
+
+
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
 
-        if (isRotating)
+
+        isAnimation = animator.GetBool("Push");
+
+        if (isRotating && !isAnimation)
         {
             RotatePlayer(angle);
             return;
+        } else if(isRotating && isAnimation)
+        {
+            StopPushing();
+            return;
         }
+
 
 
         if (moveHorizontal < 0 && !isMoving && !IsPushing)
@@ -298,11 +318,12 @@ public class PlayerMove : MonoBehaviour
         }
 
 
+
         //Debug.Log("destinationCount = " + destinationCount);
 
+      
 
-
-        bool isAnimation = animator.GetBool("Run");
+        isAnimation = animator.GetBool("Run");
 
         if (isMoving)
         {
@@ -360,6 +381,11 @@ public class PlayerMove : MonoBehaviour
             if (destinationCount == 3)
             {
                 Debug.Log("Level complite!");
+                particle.SetActive(true);
+            }
+            else
+            {
+                particle.SetActive(false);
             }
         }
 
@@ -369,10 +395,10 @@ public class PlayerMove : MonoBehaviour
 
     void StartMoving()
     {
-        isMoving = true;
-        IsPushing = false;
+        //isMoving = true;
+        //IsPushing = false;
         animator.SetBool("Run", true);
-        interpolationFramesCount = 30;
+        interpolationFramesCount = 27;
     }
 
     void StopMoving()
@@ -382,8 +408,8 @@ public class PlayerMove : MonoBehaviour
 
     void StartPushing()
     {
-        isMoving = false;
-        IsPushing = true;
+        //isMoving = false;
+        //IsPushing = true;
         animator.SetBool("Push", true);
         interpolationFramesCount = 200;
     }
@@ -404,7 +430,7 @@ public class PlayerMove : MonoBehaviour
     }
 
 
-
+    
     public bool IsAnimationPlaying(string animationName)
     {
         // берем информацию о состоянии

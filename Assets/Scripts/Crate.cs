@@ -1,4 +1,3 @@
-using System.Numerics;
 using UnityEngine;
 
 public class Crate : MonoBehaviour
@@ -34,21 +33,23 @@ public class Crate : MonoBehaviour
     {   
         if (other.gameObject.tag == "Player" && playerMove)
         {
-
-            Debug.Log("OnTriggerExit - Обнулили");
             StopPushing();
-        }
-        
+        }   
     }
 
     public void StopPushing()
     {
         playerMove = null;
-        //Debug.Log("Обнулили");
+
         if (particle.activeSelf)
         {
             particle.SetActive(false);
         }
+
+        float x = Mathf.Round(transform.position.x);
+        float z = Mathf.Round(transform.position.z);
+       
+        transform.position = new UnityEngine.Vector3(x, 0.0f, z);
     }
 
 }
