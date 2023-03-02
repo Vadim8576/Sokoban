@@ -4,16 +4,15 @@ using UnityEngine;
 //эта строчка гарантирует что наш скрипт не завалитс€ 
 //ести на плеере будет отсутствовать компонент Rigidbody
 //[RequireComponent(typeof(Rigidbody))]
-public class PlayerMove : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [SerializeField] GameObject particle;
-
     [SerializeField] private float speed;
     [SerializeField] private float rotationSpeed;
     [SerializeField] public Animator animator;
-    DrawLevel drawLevel;
+    DrawLevel DrawLevel;
+    Maps LevelMaps;
 
-    //Crate crate;
 
     public bool IsPushing = false;
     bool isRotating = false;
@@ -23,6 +22,7 @@ public class PlayerMove : MonoBehaviour
 
     float moveHorizontal;
     float moveVertical;
+
 
     int newX;
     int newZ;
@@ -38,22 +38,24 @@ public class PlayerMove : MonoBehaviour
 
     bool isAnimation;
 
+
+    int CurrentLevel = 0;
+
+
     private void Start()
     {
-        drawLevel = FindObjectOfType<DrawLevel>();
-        //crate = FindObjectOfType<Crate>();
+        DrawLevel = FindObjectOfType<DrawLevel>();
+        LevelMaps = FindObjectOfType<Maps>();
 
-        map = drawLevel.getMap();
+        map = LevelMaps.GetMap(CurrentLevel);
 
         if (map != null)
         {
             oldX = 1;
-            oldZ = drawLevel.MapLength - 2;
+            oldZ = LevelMaps.MapLength - 2;
             newX = 0;
             newZ = 0;
         }
-
-
     }
 
 
@@ -68,22 +70,28 @@ public class PlayerMove : MonoBehaviour
         }
 
 
-        moveHorizontal = Input.GetAxisRaw("Horizontal");
-        moveVertical = Input.GetAxisRaw("Vertical");
-
-
         isAnimation = animator.GetBool("Push");
 
         if (isRotating && !isAnimation)
         {
-            RotatePlayer(angle);
+           
+           RotatePlayer(angle);
+
             return;
-        } else if(isRotating && isAnimation)
+        }
+        else if (isRotating && isAnimation)
         {
             StopPushing();
             return;
         }
 
+
+        moveHorizontal = Input.GetAxisRaw("Horizontal");
+        moveVertical = Input.GetAxisRaw("Vertical");
+
+        // переписать!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // if (!isMoving && !IsPushing) return;
+        //if (moveHorizontal < 0 && !isMoving && !IsPushing)
 
 
         if (moveHorizontal < 0 && !isMoving && !IsPushing)
@@ -94,6 +102,7 @@ public class PlayerMove : MonoBehaviour
             if (transform.eulerAngles.y != angle)
             {
                 isRotating = true;
+
                 return;
             }
             if (map[oldZ, oldX - 1] == " " || map[oldZ, oldX - 1] == "X")
@@ -148,6 +157,7 @@ public class PlayerMove : MonoBehaviour
             angle = 90;
             if (transform.eulerAngles.y != angle)
             {
+
                 isRotating = true;
                 return;
             }
@@ -319,10 +329,6 @@ public class PlayerMove : MonoBehaviour
 
 
 
-        //Debug.Log("destinationCount = " + destinationCount);
-
-      
-
         isAnimation = animator.GetBool("Run");
 
         if (isMoving)
@@ -375,7 +381,6 @@ public class PlayerMove : MonoBehaviour
             oldZ += newZ;
             newX = 0;
             newZ = 0;
-            //Debug.Log("ѕод ногами " + drawLevel.getMap()[oldZ, oldX].ToString());
 
 
             if (destinationCount == 3)
@@ -395,8 +400,6 @@ public class PlayerMove : MonoBehaviour
 
     void StartMoving()
     {
-        //isMoving = true;
-        //IsPushing = false;
         animator.SetBool("Run", true);
         interpolationFramesCount = 27;
     }
@@ -408,10 +411,8 @@ public class PlayerMove : MonoBehaviour
 
     void StartPushing()
     {
-        //isMoving = false;
-        //IsPushing = true;
         animator.SetBool("Push", true);
-        interpolationFramesCount = 200;
+        interpolationFramesCount = 150;
     }
 
     void StopPushing()
@@ -419,10 +420,15 @@ public class PlayerMove : MonoBehaviour
         animator.SetBool("Push", false);
     }
 
+
+    
     void RotatePlayer(int angle)
     {
+
         Quaternion needRotation = Quaternion.Euler(0.0f, angle, 0.0f);
+
         transform.localRotation = Quaternion.RotateTowards(transform.localRotation, needRotation, rotationSpeed * Time.deltaTime);
+
         if (Quaternion.Angle(transform.localRotation, needRotation) < 0.01f)
         {
             isRotating = false;
@@ -430,7 +436,6 @@ public class PlayerMove : MonoBehaviour
     }
 
 
-    
     public bool IsAnimationPlaying(string animationName)
     {
         // берем информацию о состо€нии

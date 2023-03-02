@@ -31,7 +31,7 @@ Transform:
   m_Children:
   - {fileID: 8385409010067327751}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1176366587733887974
 BoxCollider:
@@ -52,8 +52,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 0.10168965, z: 0.99462295}
+  m_Center: {x: 0, y: -0.04831674, z: 0.002688527}
 --- !u!1 &6340259513649517508
 GameObject:
   m_ObjectHideFlags: 0
@@ -115,7 +115,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5728afa8ec6e9cb409f43f45f6adc340, type: 2}
+  - {fileID: 2100000, guid: 1cd18f9b6c68dd64eb296154e464f702, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

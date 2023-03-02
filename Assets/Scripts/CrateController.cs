@@ -1,24 +1,25 @@
 using UnityEngine;
 
-public class Crate : MonoBehaviour
+public class CrateController : MonoBehaviour
 {
     [SerializeField] GameObject particle;
-    PlayerMove playerMove = null;
+    PlayerController player = null;
+
 
     private void Update()
     {
-        if(playerMove && playerMove.IsPushing)
+        if(player && player.IsPushing)
         {
-            transform.position = playerMove.InterpolatedPosition + playerMove.MoveVector;       
+            transform.position = player.InterpolatedPosition + player.MoveVector;       
         }
     }
 
 
     private void OnTriggerEnter(Collider other)
     {       
-        if (other.gameObject.tag == "Player" && !playerMove)
+        if (other.gameObject.tag == "Player" && !player)
         {
-            playerMove = other.attachedRigidbody.GetComponent<PlayerMove>();
+            player = other.attachedRigidbody.GetComponent<PlayerController>();
             Debug.Log("Trigger");
 
             if (!particle.activeSelf)
@@ -31,7 +32,7 @@ public class Crate : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {   
-        if (other.gameObject.tag == "Player" && playerMove)
+        if (other.gameObject.tag == "Player" && player)
         {
             StopPushing();
         }   
@@ -39,7 +40,7 @@ public class Crate : MonoBehaviour
 
     public void StopPushing()
     {
-        playerMove = null;
+        player = null;
 
         if (particle.activeSelf)
         {
