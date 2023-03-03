@@ -10,8 +10,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float rotationSpeed;
     [SerializeField] public Animator animator;
-    DrawLevel DrawLevel;
-    Maps LevelMaps;
+
+    Levels Levels;
 
 
     public bool IsPushing = false;
@@ -44,18 +44,19 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        DrawLevel = FindObjectOfType<DrawLevel>();
-        LevelMaps = FindObjectOfType<Maps>();
+        Levels = FindObjectOfType<Levels>();
 
-        map = LevelMaps.GetMap(CurrentLevel);
+        map = Levels.GetConvertMap(CurrentLevel);
 
         if (map != null)
         {
             oldX = 1;
-            oldZ = LevelMaps.MapLength - 2;
+            oldZ = Levels.MapLength - 2;
             newX = 0;
             newZ = 0;
         }
+
+        transform.localEulerAngles = new Vector3(0, -180, 0);
     }
 
 
@@ -89,11 +90,7 @@ public class PlayerController : MonoBehaviour
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
 
-        // переписать!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // if (!isMoving && !IsPushing) return;
-        //if (moveHorizontal < 0 && !isMoving && !IsPushing)
-
-
+        
         if (moveHorizontal < 0 && !isMoving && !IsPushing)
         {
             moveVertical = 0;

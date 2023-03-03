@@ -2,13 +2,21 @@ using UnityEngine;
 
 public class CrateController : MonoBehaviour
 {
-    [SerializeField] GameObject particle;
-    PlayerController player = null;
+    //[SerializeField] GameObject particle;
+    PlayerController player;
+
+    bool isPushing = false;
+
+    private void Start()
+    {
+        player = FindObjectOfType<PlayerController>();
+    }
+
 
 
     private void Update()
     {
-        if(player && player.IsPushing)
+        if(isPushing && player.IsPushing)
         {
             transform.position = player.InterpolatedPosition + player.MoveVector;       
         }
@@ -17,40 +25,34 @@ public class CrateController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {       
-        if (other.gameObject.tag == "Player" && !player)
+        if (other.gameObject.tag == "Player" && !isPushing)
         {
-            player = other.attachedRigidbody.GetComponent<PlayerController>();
+        
+            isPushing = true;
+
             Debug.Log("Trigger");
 
+            /*
             if (!particle.activeSelf)
             {
                 particle.SetActive(true);
             }
+            */
         }    
     }
 
 
     private void OnTriggerExit(Collider other)
     {   
-        if (other.gameObject.tag == "Player" && player)
+        if (other.gameObject.tag == "Player" && isPushing)
         {
-            StopPushing();
+            isPushing = false;
+
+            float x = Mathf.Round(transform.position.x);
+            float z = Mathf.Round(transform.position.z);
+
+            transform.position = new Vector3(x, 0.0f, z);
         }   
-    }
-
-    public void StopPushing()
-    {
-        player = null;
-
-        if (particle.activeSelf)
-        {
-            particle.SetActive(false);
-        }
-
-        float x = Mathf.Round(transform.position.x);
-        float z = Mathf.Round(transform.position.z);
-       
-        transform.position = new UnityEngine.Vector3(x, 0.0f, z);
     }
 
 }

@@ -1,7 +1,5 @@
-using System.Drawing;
 using UnityEngine;
-using UnityEngine.Rendering;
-using Color = UnityEngine.Color;
+
 
 public class DrawLevel : MonoBehaviour
 {
@@ -11,7 +9,7 @@ public class DrawLevel : MonoBehaviour
     public GameObject _wall;
     public GameObject _player;
 
-    Maps LevelMaps;
+    Levels Levels;
 
     // —южет: кладовщик просыпаетс€ от кошмара - на него едут €щики со всех сторон
     // он просыпаетс€ в холодном поту и идет на работу
@@ -23,9 +21,13 @@ public class DrawLevel : MonoBehaviour
 
     void Start()
     {
-        LevelMaps = FindObjectOfType<Maps>();
-        int mapLength = LevelMaps.MapLength;
-        map = LevelMaps.GetMap(0);
+        Levels = FindObjectOfType<Levels>();
+
+        int mapLength = Levels.MapLength;
+
+        map = Levels.GetConvertMap(0);
+
+
 
         for (int z = 0; z < mapLength; z++)
         {
@@ -37,12 +39,12 @@ public class DrawLevel : MonoBehaviour
                 {
                     Instantiate(_placeCell, new Vector3(x, 0, z), Quaternion.identity);
                 }
-                /*
-                if (map2dString == "#")
+               
+                if (mapSymbol == "#")
                 {
-                    Instantiate(_wall, new Vector3(xx, 0, zz), Quaternion.identity);
+                    //Instantiate(_wall, new Vector3(x, 0, z), Quaternion.identity);
                 }
-                */
+                
                 if (mapSymbol == "X")
                 {
                     Instantiate(_destinationCell, new Vector3(x, 0, z), Quaternion.identity);
@@ -70,6 +72,11 @@ public class DrawLevel : MonoBehaviour
 
         }
 
+    }
+
+    private void Update()
+    {
+        
     }
 
 }
