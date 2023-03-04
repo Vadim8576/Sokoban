@@ -9,7 +9,8 @@ public class DrawLevel : MonoBehaviour
     public GameObject _wall;
     public GameObject _player;
 
-    Levels Levels;
+ 
+    GameManager GameManager;
 
     // Сюжет: кладовщик просыпается от кошмара - на него едут ящики со всех сторон
     // он просыпается в холодном поту и идет на работу
@@ -21,11 +22,15 @@ public class DrawLevel : MonoBehaviour
 
     void Start()
     {
-        Levels = FindObjectOfType<Levels>();
+        //Levels = FindObjectOfType<Levels>();
+        GameManager = FindObjectOfType<GameManager>();
 
-        int mapLength = Levels.MapLength;
+        int mapLength = GameManager.GetMapLength();
 
-        map = Levels.GetConvertMap(0);
+
+        //Debug.Log("DrawLevels CurrentLevel = " + Progress.GetCurrentLevel());
+
+        map = GameManager.GetConvertMap(GameManager.GetCurrentLevel());
 
 
 
@@ -35,7 +40,15 @@ public class DrawLevel : MonoBehaviour
             {
                 string mapSymbol = map[z, x];
 
-                if (mapSymbol != "#" && mapSymbol != "X")
+                if (mapSymbol == "@")
+                {
+                    GameManager.SetPlayerСoordinates(x, z);
+
+                    Instantiate(_placeCell, new Vector3(x, 0, z), Quaternion.identity);
+                    Instantiate(_player, new Vector3(x, 0, z), Quaternion.identity);
+                }
+                
+                if (mapSymbol == " ")
                 {
                     Instantiate(_placeCell, new Vector3(x, 0, z), Quaternion.identity);
                 }
@@ -58,13 +71,15 @@ public class DrawLevel : MonoBehaviour
                     Instantiate(_crate, new Vector3(x, 0, z), Quaternion.identity);
                 }
 
+                /*
                 if (x == 1 && z == 8)
                 {
                     Instantiate(_player, new Vector3(x, 0, z), Quaternion.identity);
                 }
-
+                */
                 if (mapSymbol == "O")
                 {
+                    Instantiate(_placeCell, new Vector3(x, 0, z), Quaternion.identity);
                     Instantiate(_crate, new Vector3(x, 0, z), Quaternion.identity);
                 }
 
@@ -72,11 +87,6 @@ public class DrawLevel : MonoBehaviour
 
         }
 
-    }
-
-    private void Update()
-    {
-        
     }
 
 }

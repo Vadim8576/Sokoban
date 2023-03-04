@@ -6,7 +6,7 @@ public class DestinationCellController : MonoBehaviour
     Component[] rends;
     Renderer rend; 
 
-    private void Start()
+    private void Awake()
     {
         rends = gameObject.GetComponentsInChildren<Renderer>(true);
         rend = (Renderer)rends[0];
@@ -15,7 +15,7 @@ public class DestinationCellController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Crate")
+        if (other.gameObject.tag == "Crate" && rend)
         {
             
             rend.material.color = Color.green;
@@ -27,7 +27,7 @@ public class DestinationCellController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == "Crate")
+        if (other.gameObject.tag == "Crate" && rend)
         {
             rend.material.color = Color.red;
             //rend.material.EnableKeyword("_EMISSION");

@@ -1,3 +1,5 @@
+using System;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 
@@ -11,8 +13,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     [SerializeField] public Animator animator;
 
-    Levels Levels;
-
+    //Levels Levels;
+    GameManager GameManager;
 
     public bool IsPushing = false;
     bool isRotating = false;
@@ -39,19 +41,28 @@ public class PlayerController : MonoBehaviour
     bool isAnimation;
 
 
-    int CurrentLevel = 0;
+    //int CurrentLevel = 0;
 
 
     private void Start()
     {
-        Levels = FindObjectOfType<Levels>();
+        //Levels = FindObjectOfType<Levels>();
+        GameManager = FindObjectOfType<GameManager>();
 
-        map = Levels.GetConvertMap(CurrentLevel);
+
+        //Debug.Log("PlayerController CurrentLevel = " + Progress.GetCurrentLevel());
+
+
+        map = GameManager.GetConvertMap(GameManager.GetCurrentLevel(), "@");
+             
 
         if (map != null)
         {
-            oldX = 1;
-            oldZ = Levels.MapLength - 2;
+            //oldX = 1;
+            //oldZ = GameManager.GetMapLength() - 2;
+
+            oldX = GameManager.GetPlayerX();
+            oldZ = GameManager.GetPlayerZ();
             newX = 0;
             newZ = 0;
         }
@@ -75,8 +86,8 @@ public class PlayerController : MonoBehaviour
 
         if (isRotating && !isAnimation)
         {
-           
-           RotatePlayer(angle);
+
+            RotatePlayer(angle);
 
             return;
         }
@@ -90,7 +101,7 @@ public class PlayerController : MonoBehaviour
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
 
-        
+
         if (moveHorizontal < 0 && !isMoving && !IsPushing)
         {
             moveVertical = 0;
@@ -418,7 +429,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    
+
     void RotatePlayer(int angle)
     {
 

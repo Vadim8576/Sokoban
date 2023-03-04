@@ -5,15 +5,17 @@ using UnityEngine;
 [System.Serializable]
 public class GameInfo
 {
-    public int CurentLevel;
+    /*
+    public int CurentLevel; // текущий уровень
+    public int MapLength; // длинна карты (кол-во строк)
+    public int NumberOfLevels; // кол-во уровней
+    */
 }
 
 
 
 public class Progress : MonoBehaviour
 {
-
-
 
     public GameInfo GameInfo;
 
@@ -38,5 +40,9 @@ public class Progress : MonoBehaviour
         GameInfo = new GameInfo();
     }
 
-   
+
+
+    
+
+
 }
