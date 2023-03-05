@@ -33,6 +33,10 @@ public class DrawLevel : MonoBehaviour
         map = GameManager.GetConvertMap(GameManager.GetCurrentLevel());
 
 
+        Debug.Log(map);
+        Debug.Log(map.Length);
+
+
 
         for (int z = 0; z < mapLength; z++)
         {

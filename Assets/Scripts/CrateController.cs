@@ -24,8 +24,11 @@ public class CrateController : MonoBehaviour
 
 
     private void OnTriggerEnter(Collider other)
-    {       
+    {
+        //PlayerController playerController = other.attachedRigidbody.GetComponent<PlayerController>();
+
         if (other.gameObject.tag == "Player" && !isPushing)
+        //if (playerController && !isPushing)
         {
         
             isPushing = true;
@@ -43,7 +46,9 @@ public class CrateController : MonoBehaviour
 
 
     private void OnTriggerExit(Collider other)
-    {   
+    {
+        //PlayerController playerController = other.attachedRigidbody.GetComponent<PlayerController>();
+        //if (playerController && !isPushing)
         if (other.gameObject.tag == "Player" && isPushing)
         {
             isPushing = false;

@@ -13,14 +13,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     [SerializeField] public Animator animator;
 
-    //Levels Levels;
     GameManager GameManager;
 
     public bool IsPushing = false;
     bool isRotating = false;
     bool isMoving = false;
     int angle = 0;
-    int destinationCount = 0; // —четчик €щиков, поставленных на место назначени€
+    //int destinationCount = 0; // —четчик €щиков, поставленных на место назначени€
 
     float moveHorizontal;
     float moveVertical;
@@ -46,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        //Levels = FindObjectOfType<Levels>();
+     
         GameManager = FindObjectOfType<GameManager>();
 
 
@@ -127,7 +126,7 @@ public class PlayerController : MonoBehaviour
                     if (map[oldZ, oldX - 1] == "V")
                     {
                         map[oldZ, oldX - 1] = "X";
-                        destinationCount--;
+                        //destinationCount--;
                     }
                     else
                     {
@@ -140,12 +139,12 @@ public class PlayerController : MonoBehaviour
                 else if (map[oldZ, oldX - 2] == "X")
                 {
                     map[oldZ, oldX - 2] = "V";
-                    destinationCount++;
+                    //destinationCount++;
 
                     if (map[oldZ, oldX - 1] == "V")
                     {
                         map[oldZ, oldX - 1] = "X";
-                        destinationCount--;
+                        //destinationCount--;
                     }
                     else
                     {
@@ -187,7 +186,7 @@ public class PlayerController : MonoBehaviour
                     if (map[oldZ, oldX + 1] == "V")
                     {
                         map[oldZ, oldX + 1] = "X";
-                        destinationCount--;
+                        //destinationCount--;
                     }
                     else
                     {
@@ -202,11 +201,11 @@ public class PlayerController : MonoBehaviour
                 else if (map[oldZ, oldX + 2] == "X")
                 {
                     map[oldZ, oldX + 2] = "V";
-                    destinationCount++;
+                    //destinationCount++;
                     if (map[oldZ, oldX + 1] == "V")
                     {
                         map[oldZ, oldX + 1] = "X";
-                        destinationCount--;
+                        //destinationCount--;
                     }
                     else
                     {
@@ -245,7 +244,7 @@ public class PlayerController : MonoBehaviour
                     if (map[oldZ - 1, oldX] == "V")
                     {
                         map[oldZ - 1, oldX] = "X";
-                        destinationCount--;
+                        //destinationCount--;
                     }
                     else
                     {
@@ -259,12 +258,12 @@ public class PlayerController : MonoBehaviour
                 else if (map[oldZ - 2, oldX] == "X")
                 {
                     map[oldZ - 2, oldX] = "V";
-                    destinationCount++;
+                    //destinationCount++;
 
                     if (map[oldZ - 1, oldX] == "V")
                     {
                         map[oldZ - 1, oldX] = "X";
-                        destinationCount--;
+                        //destinationCount--;
                     }
                     else
                     {
@@ -302,7 +301,7 @@ public class PlayerController : MonoBehaviour
                     if (map[oldZ + 1, oldX] == "V")
                     {
                         map[oldZ + 1, oldX] = "X";
-                        destinationCount--;
+                        //destinationCount--;
                     }
                     else
                     {
@@ -316,12 +315,12 @@ public class PlayerController : MonoBehaviour
                 else if (map[oldZ + 2, oldX] == "X")
                 {
                     map[oldZ + 2, oldX] = "V";
-                    destinationCount++;
+                    //destinationCount++;
 
                     if (map[oldZ + 1, oldX] == "V")
                     {
                         map[oldZ + 1, oldX] = "X";
-                        destinationCount--;
+                        //destinationCount--;
                     }
                     else
                     {
@@ -391,7 +390,7 @@ public class PlayerController : MonoBehaviour
             newZ = 0;
 
 
-            if (destinationCount == 3)
+            if (GameManager.GetCurrentDestinationCount() == GameManager.GetTotalDestinationCount())
             {
                 Debug.Log("Level complite!");
                 particle.SetActive(true);

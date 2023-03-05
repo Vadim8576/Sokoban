@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &208775247468877812
+--- !u!1 &6394072363049404691
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,73 +8,50 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 208775247468877810}
-  - component: {fileID: 208775247468877811}
+  - component: {fileID: 6394072363049404689}
+  - component: {fileID: 6394072363049404690}
   m_Layer: 0
-  m_Name: Levels
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &208775247468877810
+--- !u!4 &6394072363049404689
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 208775247468877812}
+  m_GameObject: {fileID: 6394072363049404691}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.900229, y: -8.358444, z: -135.41818}
+  m_LocalPosition: {x: 1.8935714, y: 7.7194595, z: 132.41818}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2869147364790888341}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &208775247468877811
+--- !u!114 &6394072363049404690
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 208775247468877812}
+  m_GameObject: {fileID: 6394072363049404691}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae8de338541b7e546be162ffba5f4f04, type: 3}
+  m_Script: {fileID: 11500000, guid: 8c10758bd94ff144da5a88ff464297ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &208775248546247218
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 208775248546247217}
-  m_Layer: 0
-  m_Name: LevelsMenu
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &208775248546247217
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 208775248546247218}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.900229, y: -8.358444, z: -135.41818}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2869147364790888341}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  GameData:
+    CurentLevel: 0
+    MapLength: 0
+    PlayerX: 0
+    PlayerZ: 0
+    TotalDestinationCount: 0
+    CurrentDestinationCount: 0
+    NumberOfLevels: 0
 --- !u!1 &7359616821736866304
 GameObject:
   m_ObjectHideFlags: 0
@@ -99,12 +76,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7359616821736866304}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.900229, y: 8.358444, z: 135.41818}
+  m_LocalPosition: {x: 3.0066667, y: 0.63899994, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 208775247468877810}
-  - {fileID: 208775248546247217}
+  - {fileID: 6394072363049404689}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

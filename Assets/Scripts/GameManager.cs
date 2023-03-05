@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 
 [System.Serializable]
@@ -10,6 +11,8 @@ public class GameData
     public int MapLength = 10; // длинна карты (кол-во строк)
     public int PlayerX; // Начальные координаты игрока
     public int PlayerZ;
+    public int TotalDestinationCount = 0; // сколько язиков нужно поставить на место
+    public int CurrentDestinationCount = 0; // сколько язиков поставлено в данный момент
 
     public static List<string>[] Maps = new List<string>[3] {
         new List<string>()
@@ -62,6 +65,7 @@ public class GameData
 
 public class GameManager : MonoBehaviour
 {
+
     public GameData GameData;
     int MapLength;
 
@@ -138,6 +142,61 @@ public class GameManager : MonoBehaviour
         return GameData.Maps;
     }
 
+
+
+    public void TotalDestinationCountInc()
+    {
+        GameData.TotalDestinationCount++;
+    }
+    public void ResetTotalDestinationCount()
+    {
+        GameData.TotalDestinationCount = 0;
+    }
+
+    public int GetTotalDestinationCount()
+    {
+        return GameData.TotalDestinationCount;
+    }
+
+    public void CurrentDestinationCountInc()
+    {
+        GameData.CurrentDestinationCount++;
+    }
+    
+    public void ResetCurrentDestinationCount()
+    {
+        GameData.CurrentDestinationCount = 0;
+    }
+
+    public void CurrentDestinationCountDec()
+    {
+        GameData.CurrentDestinationCount--;
+    }
+
+    public int GetCurrentDestinationCount()
+    {
+        return GameData.CurrentDestinationCount;
+    }
+
+    /*
+    public void RestartLevel()
+    {
+        DestroyGameObjectsWithTag("DestroyedGameObject");
+    }
+
+    public static void DestroyGameObjectsWithTag(string tag)
+    {
+        GameObject[] gameObjects = GameObject.FindGameObjectsWithTag(tag);
+
+        if (gameObjects.Length == 0) return;
+
+        foreach (GameObject target in gameObjects)
+        {
+            Destroy(target);
+        }
+    }
+    */
+
     public string[,] GetConvertMap(int level, string replaceSymbol = "")
     {
         string[,] ConvertMap = new string[MapLength, MapLength];
@@ -157,8 +216,18 @@ public class GameManager : MonoBehaviour
                 }
 
                 ConvertMap[zz, x] = substring;
+
+                if (replaceSymbol == "@") continue;
+
+                if(substring == "X" || substring == "V")
+                {
+                    TotalDestinationCountInc();
+                }
             }
         }
+
+        Debug.Log("GameManager TotalDestinationCount = " + GetTotalDestinationCount());
+
         return ConvertMap;
     }
 }
