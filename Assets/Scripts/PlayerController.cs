@@ -1,6 +1,7 @@
 using System;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 
 //эта строчка гарантирует что наш скрипт не завалится 
@@ -9,11 +10,14 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] GameObject particle;
-    [SerializeField] private float speed;
-    [SerializeField] private float rotationSpeed;
+    //[SerializeField] private float speed;
+    //[SerializeField] private float rotationSpeed;
     [SerializeField] public Animator animator;
 
+
     GameManager GameManager;
+
+    InterfaceController InterfaceController;
 
     public bool IsPushing = false;
     bool isRotating = false;
@@ -25,6 +29,11 @@ public class PlayerController : MonoBehaviour
     float moveVertical;
 
 
+    float moveSpeed = 3f;
+    float pushSpeed = 0.5f;
+    float speed;
+    float rotationSpeed = 800f;
+
     int newX;
     int newZ;
     int oldX;
@@ -32,10 +41,11 @@ public class PlayerController : MonoBehaviour
 
     string[,] map;
 
-    public Vector3 InterpolatedPosition;
+    //public Vector3 InterpolatedPosition;
     public Vector3 MoveVector;
-    public int interpolationFramesCount = 45; // Number of frames to completely interpolate between the 2 positions
-    int elapsedFrames = 0;
+
+    //public int interpolationFramesCount = 60; // Number of frames to completely interpolate between the 2 positions
+    //int elapsedFrames = 0;
 
     bool isAnimation;
 
@@ -47,6 +57,7 @@ public class PlayerController : MonoBehaviour
     {
      
         GameManager = FindObjectOfType<GameManager>();
+        InterfaceController = FindObjectOfType<InterfaceController>();
 
 
         //Debug.Log("PlayerController CurrentLevel = " + Progress.GetCurrentLevel());
@@ -72,13 +83,19 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.GameIsPaused()) return;
+
         if (map == null) return;
+
+
 
 
         if (Input.GetKey("escape"))
         {
-            Application.Quit();
+            InterfaceController.ShowPauseMenu();
+            //Application.Quit();
         }
+
 
 
         isAnimation = animator.GetBool("Push");
@@ -365,17 +382,16 @@ public class PlayerController : MonoBehaviour
         }
 
 
-        if (!isMoving && !IsPushing) return;
-
-
-        float interpolationRatio = (float)elapsedFrames / interpolationFramesCount;
-
         MoveVector = new Vector3(newX, 0, newZ);
 
-        InterpolatedPosition = Vector3.Lerp(new Vector3(oldX, 0, oldZ), new Vector3(oldX + newX, 0, oldZ + newZ), interpolationRatio);
+        if (!isMoving && !IsPushing) return;
+        
 
-        elapsedFrames = (elapsedFrames + 1) % (interpolationFramesCount + 1);
-        if (elapsedFrames == 0)
+        Vector3 target = new Vector3(oldX + newX, 0, oldZ + newZ);
+
+        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+
+        if (Vector3.Distance(transform.position, target) < 0.001f)
         {
             if (IsPushing)
             {
@@ -389,26 +405,31 @@ public class PlayerController : MonoBehaviour
             newX = 0;
             newZ = 0;
 
+            transform.position = new Vector3(oldX, 0, oldZ);
 
             if (GameManager.GetCurrentDestinationCount() == GameManager.GetTotalDestinationCount())
             {
                 Debug.Log("Level complite!");
-                particle.SetActive(true);
+                //particle.SetActive(true);
+                StopPushing();
+                InterfaceController.ShowLevelCompliteMenu();
+                Time.timeScale = 1;
             }
             else
             {
-                particle.SetActive(false);
+                //particle.SetActive(false);
             }
         }
 
-        transform.position = InterpolatedPosition;
+        
 
     }
 
     void StartMoving()
     {
         animator.SetBool("Run", true);
-        interpolationFramesCount = 27;
+        speed = moveSpeed;
+        //interpolationFramesCount = 27;
     }
 
     void StopMoving()
@@ -419,7 +440,8 @@ public class PlayerController : MonoBehaviour
     void StartPushing()
     {
         animator.SetBool("Push", true);
-        interpolationFramesCount = 150;
+        speed = pushSpeed;
+        //interpolationFramesCount = 150;
     }
 
     void StopPushing()

@@ -8,6 +8,7 @@ public class DrawLevel : MonoBehaviour
     public GameObject _crate;
     public GameObject _wall;
     public GameObject _player;
+    public GameObject _playerWidthLight;
 
  
     GameManager GameManager;

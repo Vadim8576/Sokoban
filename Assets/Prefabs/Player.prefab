@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &410087041
 Transform:
   m_ObjectHideFlags: 0
@@ -152,7 +152,7 @@ Transform:
   - {fileID: 1945468393130038585}
   - {fileID: 2202529550888451485}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2122611936134781399
 MonoBehaviour:
@@ -167,13 +167,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particle: {fileID: 2518063685173407967}
-  speed: 0
-  rotationSpeed: 800
   animator: {fileID: 2122611935969120699}
   IsPushing: 0
-  InterpolatedPosition: {x: 0, y: 0, z: 0}
   MoveVector: {x: 0, y: 0, z: 0}
-  interpolationFramesCount: 45
 --- !u!54 &2122611936134781396
 Rigidbody:
   m_ObjectHideFlags: 0

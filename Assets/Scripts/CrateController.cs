@@ -16,10 +16,19 @@ public class CrateController : MonoBehaviour
 
     private void Update()
     {
-        if(isPushing && player.IsPushing)
+        if (isPushing && player.IsPushing)
         {
-            transform.position = player.InterpolatedPosition + player.MoveVector;       
+            transform.position = player.transform.position + player.MoveVector;
+        } 
+
+        if(isPushing && !player.IsPushing)
+        {
+            float roundX = Mathf.Round(transform.position.x);
+            float roundZ = Mathf.Round(transform.position.z);
+       
+            transform.position = new Vector3(roundX, 0.0f, roundZ);
         }
+
     }
 
 
@@ -30,7 +39,7 @@ public class CrateController : MonoBehaviour
         if (other.gameObject.tag == "Player" && !isPushing)
         //if (playerController && !isPushing)
         {
-        
+
             isPushing = true;
 
             Debug.Log("Trigger");
@@ -41,7 +50,7 @@ public class CrateController : MonoBehaviour
                 particle.SetActive(true);
             }
             */
-        }    
+        }
     }
 
 
@@ -53,11 +62,8 @@ public class CrateController : MonoBehaviour
         {
             isPushing = false;
 
-            float x = Mathf.Round(transform.position.x);
-            float z = Mathf.Round(transform.position.z);
 
-            transform.position = new Vector3(x, 0.0f, z);
-        }   
+        }
     }
 
 }

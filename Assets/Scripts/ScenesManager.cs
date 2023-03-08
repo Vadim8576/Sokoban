@@ -12,12 +12,13 @@ public class ScenesManager : MonoBehaviour
         GameManager = FindObjectOfType<GameManager>();
     }
 
-    public void ReastartLevel()
+    public void StartLevel()
     {
 
        
-       ResetDestinationCounts();     
-        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        ResetDestinationCounts();     
+        //SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadSceneAsync(1);
 
         Debug.Log("------------------------------------------------------");
         Debug.Log("MapLength = " + GameManager.GameData.MapLength);
@@ -41,6 +42,12 @@ public class ScenesManager : MonoBehaviour
     {
         GameManager.ResetTotalDestinationCount();
         GameManager.ResetCurrentDestinationCount();
+    }
+
+    public void NextLevel()
+    {
+        GameManager.SetNextLevel();
+        StartLevel();
     }
 }
 

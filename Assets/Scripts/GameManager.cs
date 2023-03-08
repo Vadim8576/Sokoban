@@ -1,20 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
 
 [System.Serializable]
 public class GameData
 {
+    
     public int CurentLevel; // текущий уровень
     public int MapLength = 10; // длинна карты (кол-во строк)
     public int PlayerX; // Начальные координаты игрока
     public int PlayerZ;
     public int TotalDestinationCount = 0; // сколько язиков нужно поставить на место
     public int CurrentDestinationCount = 0; // сколько язиков поставлено в данный момент
+    public bool isPaused = false;
 
-    public static List<string>[] Maps = new List<string>[3] {
+    public static List<string>[] Maps = new List<string>[14] {
         new List<string>()
         {
             "##########",
@@ -40,6 +43,160 @@ public class GameData
             "### #   ##",
             "###@  ####",
             "##########",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
+            "##########"
+        },
+
+        new List<string>()
+        {
+            "##########",
+            "#    #   #",
+            "#    V ###",
+            "# XO     #",
+            "# O      #",
+            "# X      #",
+            "#######  #",
+            "#        #",
+            "#     @  #",
             "##########"
         },
 
@@ -111,9 +268,35 @@ public class GameManager : MonoBehaviour
     }
     
     
+    public void Pause()
+    {
+        Time.timeScale = 0;
+        GameData.isPaused = true;
+    }
+    
+    public void Play()
+    {
+        Time.timeScale = 1;
+        GameData.isPaused = false;
+    }
+
+    public bool GameIsPaused()
+    {
+        return GameData.isPaused;
+    }
+
+
+    
     public void SetCurrentLevel(int currentLevel)
     {
         GameData.CurentLevel = currentLevel;
+    }
+    public void SetNextLevel()
+    {
+        if(GameData.CurentLevel < GameData.NumberOfLevels)
+        {
+            GameData.CurentLevel++;
+        }          
     }
 
     public int GetCurrentLevel()
