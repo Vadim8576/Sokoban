@@ -6,6 +6,7 @@ public class DrawLevel : MonoBehaviour
     public GameObject _placeCell;
     public GameObject _destinationCell;
     public GameObject _crate;
+    public GameObject _barrel;
     public GameObject _wall;
     public GameObject _player;
     public GameObject _playerWidthLight;
@@ -73,7 +74,8 @@ public class DrawLevel : MonoBehaviour
                 if (mapSymbol == "V")
                 {
                     Instantiate(_destinationCell, new Vector3(x, 0, z), Quaternion.identity);
-                    Instantiate(_crate, new Vector3(x, 0, z), Quaternion.identity);
+                    //Instantiate(_crate, new Vector3(x, 0, z), Quaternion.identity);
+                    Instantiate(_barrel, new Vector3(x, 0, z), Quaternion.identity);
                 }
 
                 /*
@@ -85,7 +87,8 @@ public class DrawLevel : MonoBehaviour
                 if (mapSymbol == "O")
                 {
                     Instantiate(_placeCell, new Vector3(x, 0, z), Quaternion.identity);
-                    Instantiate(_crate, new Vector3(x, 0, z), Quaternion.identity);
+                    //Instantiate(_crate, new Vector3(x, 0, z), Quaternion.identity);
+                    Instantiate(_barrel, new Vector3(x, 0, z), Quaternion.identity);
                 }
 
             }

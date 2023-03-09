@@ -152,7 +152,7 @@ Transform:
   - {fileID: 1945468393130038585}
   - {fileID: 2202529550888451485}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2122611936134781399
 MonoBehaviour:
@@ -5193,6 +5193,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &1945468393130038585 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 591143b6a0954f84fa4f2d0eeef1a00c,

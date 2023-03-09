@@ -26,8 +26,6 @@ public class LevelsMenu : MonoBehaviour
     void CreateButton(int level)
     {
 
-
-
         string buttonText = "Level " + (level + 1).ToString();
 
         GameObject newButton = new GameObject(buttonText, typeof(Image), typeof(Button), typeof(LayoutElement));
@@ -38,9 +36,6 @@ public class LevelsMenu : MonoBehaviour
             newButton.GetComponent<Button>().interactable = false;
         }
         
-
-
-
 
         newButton.transform.SetParent(panel);
         newButton.transform.position = new Vector3(newButton.transform.position.x, newButton.transform.position.y, panel.transform.position.z);
